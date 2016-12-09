@@ -19,7 +19,7 @@ then
   echo '
 export http_proxy="http://vhost:3128/"
 export https_proxy="http://vhost:3128/"
-' >> /home/vagrant/.profile
+' >> /home/ubuntu/.profile
   # apt
   echo '
 Acquire::ftp::proxy "ftp://vhost:3128/";
@@ -33,12 +33,20 @@ Acquire::https::proxy::mirrors.aliyun.com "DIRECT";
   export http_proxy="http://vhost:3128/"
   export https_proxy="http://vhost:3128/"
 fi
+
+# make hostip alias
+echo '
+#!/bin/bash
+alias hostip="ip route show 0.0.0.0/0 |grep -Eo 'via \S+'|awk '{print \$2;}'"
+' > /home/ubuntu/.bash_aliases
+
 # install require libs
 echo ">>>-----------------------------<<<"
 echo "   Install Additional Packages"
 echo ">>>-----------------------------<<<"
 apt-get update
 apt-get -y install apt-transport-https ca-certificates
+
 # add gpg key
 apt-key adv \
   --keyserver hkp://ha.pool.sks-keyservers.net:80 \
@@ -47,6 +55,7 @@ apt-key adv \
 echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" \
   | tee /etc/apt/sources.list.d/docker.list
 apt-get update
+
 # install Extra kernel packages
 apt-get -y install linux-image-extra-$(uname -r) linux-image-extra-virtual
 
@@ -56,9 +65,12 @@ echo "   Install Docker Packages"
 echo ">>>-----------------------------<<<"
 apt-get -y install docker-engine
 service docker start
-apt-get -y autoremove
 gpasswd -a ubuntu docker
+
+# cleanup
+apt-get -y autoremove
 
 # install docker-compose
 curl -L "https://github.com/docker/compose/releases/download/1.9.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
+

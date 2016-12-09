@@ -1,0 +1,28 @@
+version: '2'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile-app
+    environment:
+      http_proxy: ${http_proxy}
+      https_proxy: ${https_proxy}
+    container_name: rails-app
+    working_dir: /app
+    ports:
+      - 3000:3000
+    volumes:
+      - $PWD:/app
+    command:
+      "./bin/rails server --bind 0.0.0.0"
+    links:
+      - db
+    depends_on:
+      - db
+  db:
+    build: 
+      context: .
+      dockerfile: Dockerfile-db
+    container_name: rails-db
+    ports:
+      - 3306:3306

@@ -1,0 +1,7 @@
+FROM ruby:2.2
+MAINTAINER muye.sh < fumitaka.makino@gmail.com>
+WORKDIR /tmp
+ADD ./Gemfile Gemfile
+ADD ./Gemfile.lock Gemfile.lock
+RUN bundle install
+WORKDIR /app

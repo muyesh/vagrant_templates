@@ -1,0 +1,10 @@
+FROM mysql:5.6
+MAINTAINER muye.sh < fumitaka.makino@gmail.com>
+ENV MYSQL_ROOT_USER root
+ENV MYSQL_ROOT_PASSWORD root
+ENV MYSQL_DATABASE rails
+ENV MYSQL_USER dbuser
+ENV MYSQL_PASSWORD dbpass
+# dump entry point
+WORKDIR /docker-entrypoint-initdb.d
+ADD ./initial_dump.sql.gz initial_dump.sql.gz
